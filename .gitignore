@@ -1,0 +1,24 @@
+.DS_Store
+node_modules/
+unpackage/
+dist/
+
+# local env files
+.env
+.env.local
+.env.*.local
+# Editor directories and files
+.project
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw*
+*.zip
+*.exe
+tmp.md
+gin-doniai
+gin-doniai.exe
+tmp/

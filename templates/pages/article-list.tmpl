@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{block "title" .}} - 技术社区{{end}}</title>
+    <link rel="android-chrome-192x192" sizes="192x192" href="/static/icons/android-chrome-192x192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/favicon-16x16.png">
+    <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body class="dark-theme">
+{{template "header" .}}
+
+<main class="article-list-main">
+   <div class="doi-container">
+       <div class="doi-user-card">
+           <img src="{{.user.Avatar}}" alt="{{.user.Name}}" class="user-avatar">
+           <div class="word">
+               <h1 class="username">{{.user.Name}}</h1>
+               <p class="motto">{{.user.Motto}}</p>
+           </div>
+       </div>
+
+       <div class="article-list">
+           <div class="operate-menu">
+               <div class="menu-item is-active" data-tab="articles">主题帖({{.totalUserPosts}})</div>
+               <div class="menu-item" data-tab="comments">评论({{.totalUserComments}})</div>
+               <div class="menu-item" data-tab="favorites">收藏({{.totalFavoritePosts}})</div>
+           </div>
+           <div class="hr"></div>
+
+           <!--主题帖子列表-->
+           <div class="list tab-content active" id="articles-tab">
+               {{range .articles}}
+               <div class="article-item">
+                   <div class="article-title"><a href="/post-{{.ID}}-1">{{.Title}}</a></div>
+                   <div class="article-time">{{timeAgo .CreatedAt}}</div>
+               </div>
+               {{else}}
+               <div class="doi-empty-img-box">
+                   <img class="empty-img" src="https://pic.114156.xyz/uploads/TFth7tcWs7bB.webp" alt="empty">
+               </div>
+               {{end}}
+
+               <!-- 主题帖分页 -->
+               {{if gt .totalPostPages 1}}
+               <div class="doi-pagination-box">
+                   <div class="doi-page">
+                       {{if .hasPrev}}
+                       <a href="?tab=articles&page={{.prevPage}}" class="item-page prev-page">‹</a>
+                       {{else}}
+                       <a class="item-page prev-page disabled">‹</a>
+                       {{end}}
+
+                       <span class="current-page">{{.currentPage}}</span>
+
+                       {{if .hasNext}}
+                       <a href="?tab=articles&page={{.nextPage}}" class="item-page next-page">›</a>
+                       {{else}}
+                       <a class="item-page next-page disabled">›</a>
+                       {{end}}
+                   </div>
+               </div>
+               {{end}}
+           </div>
+
+           <!--评论列表-->
+           <div class="doi-comment-list tab-content" id="comments-tab">
+               {{range .comments}}
+               <div class="doi-comment-item">
+                   <div class="doi-comment-article-title">
+                       <a href="/post-{{.PostID}}-1">{{.PostTitle}}</a>
+                   </div>
+                   <div class="doi-comment-content">
+                       <span class="doi-txt">{{.Content}}</span>
+                       <span class="doi-time">{{.TimeAgo}}</span>
+                   </div>
+               </div>
+               {{else}}
+               <div class="doi-empty-img-box">
+                   <img class="empty-img" src="https://pic.114156.xyz/uploads/TFth7tcWs7bB.webp" alt="empty">
+               </div>
+               {{end}}
+
+               <!-- 评论分页 -->
+               {{if gt .totalCommentPages 1}}
+               <div class="doi-comment-pagination doi-pagination-box">
+                   <div class="doi-page">
+                       {{if .hasPrev}}
+                       <a href="?tab=comments&page={{.prevPage}}" class="item-page prev-page">‹</a>
+                       {{else}}
+                       <a class="item-page prev-page disabled">‹</a>
+                       {{end}}
+
+                       <span class="current-page">{{.currentPage}}</span>
+
+                       {{if .hasNext}}
+                       <a href="?tab=comments&page={{.nextPage}}" class="item-page next-page">›</a>
+                       {{else}}
+                       <a class="item-page next-page disabled">›</a>
+                       {{end}}
+                   </div>
+               </div>
+               {{end}}
+           </div>
+
+           <!--收藏列表-->
+           <div class="list tab-content" id="favorites-tab">
+               {{range .favorites}}
+               <div class="article-item">
+                   <div class="article-title"><a href="/post-{{.ID}}-1">{{.Title}}</a></div>
+                   <div class="article-time">{{.TimeAgo}}</div>
+               </div>
+               {{else}}
+               <div class="doi-empty-img-box">
+                   <img class="empty-img" src="https://pic.114156.xyz/uploads/TFth7tcWs7bB.webp" alt="empty">
+               </div>
+               {{end}}
+
+               <!-- 收藏分页 -->
+               {{if gt .totalFavoritePages 1}}
+               <div class="doi-pagination-box">
+                   <div class="doi-page">
+                       {{if .hasPrev}}
+                       <a href="?tab=favorites&page={{.prevPage}}" class="item-page prev-page">‹</a>
+                       {{else}}
+                       <a class="item-page prev-page disabled">‹</a>
+                       {{end}}
+
+                       <span class="current-page">{{.currentPage}}</span>
+
+                       {{if .hasNext}}
+                       <a href="?tab=favorites&page={{.nextPage}}" class="item-page next-page">›</a>
+                       {{else}}
+                       <a class="item-page next-page disabled">›</a>
+                       {{end}}
+                   </div>
+               </div>
+               {{end}}
+           </div>
+       </div>
+   </div>
+</main>
+
+{{template "footer" .}}
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>

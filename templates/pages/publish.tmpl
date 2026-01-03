@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>发表文章 - 技术社区</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/favicon-16x16.png">
+    <link rel="stylesheet" href="/static/css/app.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+</head>
+<body class="dark-theme">
+{{template "header" .}}
+
+<main>
+    <div class="publish-container">
+        <div class="publish-header">
+            <h1>发表新文章</h1>
+            <p>分享你的知识和经验，帮助社区成长</p>
+        </div>
+
+        <form class="publish-form" id="publishForm">
+            <div class="publish-form-group">
+                <label for="title">标题</label>
+                <input type="text" id="title" name="title" placeholder="请输入标题" required class="form-control">
+            </div>
+
+            <div class="form-row publish-form-tags">
+                <div class="publish-form-group">
+                    <label for="tagInput">标签</label>
+                    <div class="tag-input-wrapper">
+                        <input type="text" id="tagInput" placeholder="输入标签后按回车添加" class="form-control">
+                        <button type="button" id="addTagBtn" class="btn btn-outline">添加</button>
+                    </div>
+                    <div class="tag-list" id="tagList"></div>
+                    <input type="hidden" id="tags" name="tags">
+                </div>
+            </div>
+
+            <div class="publish-editor-container">
+                <label>文章内容 (支持 Markdown 语法)</label>
+
+                <div class="tab-select">
+                    <div class="tabs-left">
+                        <div class="tab-option tab-option-on">内容</div>
+                        <div class="tab-option">预览</div>
+                        <div class="tab-option">对照</div>
+                    </div>
+                    <div class="tabs-right">
+                        <div class="tab-option">
+                            支持
+                            <a href="https://www.markdown.xyz/basic-syntax" target="_blank">markdown语法</a>
+                        </div>
+                        <div class="tab-option tab-option-has-icon" title="行号">
+                            <svg class="icon" viewBox="0 0 1024 1024" width="160" height="160"><path d="M330.304 353.28V384H230.016v-30.72h33.696V263.04h-29.216v-23.456c17.056-3.2 28.16-7.488 39.264-14.304h27.936v128h28.576z m2.112 212.064v32h-110.08v-21.76c39.68-36.064 66.336-64.864 66.336-87.904 0-14.496-8.096-22.4-20.672-22.4-10.88 0-19.424 7.264-26.88 15.36l-20.704-20.48c15.584-16.416 30.08-24.544 52.704-24.544 30.72 0 52.064 19.648 52.064 49.92 0 27.328-23.488 57.408-47.808 81.92 7.904-1.056 18.784-2.112 25.824-2.112h29.216z m-59.52 248.32c31.584 0 58.656-16.64 58.656-46.304 0-20.48-12.992-33.28-30.72-38.624v-1.056c17.088-6.816 25.6-19.2 25.6-34.976 0-28.384-21.536-43.744-54.4-43.744-18.752 0-34.56 7.264-49.28 19.616l19.2 23.264c9.6-8.32 17.728-13.216 28.384-13.216 11.744 0 18.144 5.952 18.144 16.832 0 12.608-8.544 20.928-35.648 20.928v26.656c33.28 0 40.544 8.096 40.544 21.76 0 11.936-9.6 18.144-24.32 18.144-12.384 0-23.456-6.208-33.056-15.36l-17.504 23.872c11.52 13.44 29.216 22.208 54.4 22.208z m580.48-497.92V256H384.064v59.744h469.312z m0 226.112v-59.712H384.064v59.712h469.312z m0 166.4V768H384.064v-59.744h469.312z" fill="#FCFCFC"></path></svg>
+                        </div>
+                        <div class="tab-option tab-option-has-icon" title="工具栏">
+                            <svg class="icon" viewBox="0 0 1024 1024" width="160" height="160"><path d="M128 533.333333q0-4.209778 0.796444-8.305777 0.853333-4.152889 2.446223-8.021334 1.592889-3.868444 3.982222-7.395555 2.275556-3.470222 5.290667-6.428445 2.958222-3.015111 6.428444-5.347555 3.527111-2.275556 7.395556-3.925334 3.868444-1.592889 7.964444-2.446222 4.152889-0.796444 8.362667-0.796444t8.305777 0.796444q4.152889 0.853333 8.021334 2.446222 3.868444 1.592889 7.395555 3.982223 3.470222 2.275556 6.428445 5.290666 3.015111 2.958222 5.347555 6.428445 2.275556 3.527111 3.925334 7.395555 1.592889 3.868444 2.446222 7.964445 0.796444 4.152889 0.796444 8.362666v277.333334q0 21.333333 21.333334 21.333333h554.666666q21.333333 0 21.333334-21.333333V533.333333q0-4.209778 0.796444-8.305777 0.853333-4.152889 2.446222-8.021334 1.592889-3.868444 3.982223-7.395555 2.275556-3.470222 5.290666-6.428445 2.958222-3.015111 6.428445-5.347555 3.527111-2.275556 7.395555-3.925334 3.868444-1.592889 7.964445-2.446222 4.152889-0.796444 8.362666-0.796444t8.305778 0.796444q4.152889 0.853333 8.021333 2.446222 3.868444 1.592889 7.395556 3.982223 3.470222 2.275556 6.428444 5.290666 3.015111 2.958222 5.347556 6.428445 2.275556 3.527111 3.925333 7.395555 1.592889 3.868444 2.446223 7.964445 0.796444 4.152889 0.796444 8.362666v277.333334q0 44.202667-31.288889 75.434666-31.175111 31.232-75.377778 31.232h-554.666666q-44.202667 0-75.434667-31.288889-31.232-31.175111-31.232-75.377777V533.333333z" p-id="7807" fill="#FCFCFC"></path><path d="M106.666667 320a42.666667 42.666667 0 0 1 42.666666-42.666667h725.333334a42.666667 42.666667 0 0 1 42.666666 42.666667v170.666667a42.666667 42.666667 0 0 1-42.666666 42.666666H149.333333a42.666667 42.666667 0 0 1-42.666666-42.666666v-170.666667z" fill="#FCFCFC"></path><path d="M64 320v170.666667q0 35.328 25.031111 60.302222 24.974222 25.031111 60.302222 25.031111h725.333334q35.328 0 60.302222-25.031111 25.031111-24.974222 25.031111-60.302222v-170.666667q0-35.328-25.031111-60.302222-24.974222-25.031111-60.302222-25.031111H149.333333q-35.328 0-60.302222 25.031111-25.031111 24.974222-25.031111 60.302222z m810.666667 170.666667H149.333333v-170.666667h725.333334v170.666667z" p-id="7809" fill="#FCFCFC"></path><path d="M344.974222 131.640889q-24.974222 25.031111-24.974222 60.359111v85.333333q0 4.209778 0.796444 8.305778 0.853333 4.152889 2.446223 8.021333 1.592889 3.868444 3.982222 7.395556 2.275556 3.470222 5.290667 6.428444 2.958222 3.015111 6.428444 5.347556 3.527111 2.275556 7.395556 3.925333 3.868444 1.592889 7.964444 2.446223 4.152889 0.796444 8.362667 0.796444t8.305777-0.796444q4.152889-0.853333 8.021334-2.446223 3.868444-1.592889 7.395555-3.982222 3.470222-2.275556 6.428445-5.290667 3.015111-2.958222 5.347555-6.428444 2.275556-3.527111 3.925334-7.395556 1.592889-3.868444 2.446222-7.964444 0.796444-4.152889 0.796444-8.362667v-85.333333h213.333334v85.333333q0 4.209778 0.796444 8.305778 0.853333 4.152889 2.446222 8.021333 1.592889 3.868444 3.982223 7.395556 2.275556 3.470222 5.290666 6.428444 2.958222 3.015111 6.428445 5.347556 3.527111 2.275556 7.395555 3.925333 3.868444 1.592889 7.964445 2.446223 4.152889 0.796444 8.362666 0.796444t8.305778-0.796444q4.152889-0.853333 8.021333-2.446223 3.868444-1.592889 7.395556-3.982222 3.470222-2.275556 6.428444-5.290667 3.015111-2.958222 5.347556-6.428444 2.275556-3.527111 3.925333-7.395556 1.592889-3.868444 2.446223-7.964444 0.796444-4.152889 0.796444-8.362667v-85.333333q0-35.328-25.031111-60.302222-24.974222-25.031111-60.302222-25.031111h-213.333334q-35.328 0-60.302222 25.031111zM277.333333 490.666667q0-4.209778 0.796445-8.305778 0.853333-4.152889 2.446222-8.021333 1.592889-3.868444 3.982222-7.395556 2.275556-3.470222 5.290667-6.428444 2.958222-3.015111 6.428444-5.347556 3.527111-2.275556 7.395556-3.925333 3.868444-1.592889 7.964444-2.446223 4.152889-0.796444 8.362667-0.796444t8.305778 0.796444q4.152889 0.853333 8.021333 2.446223 3.868444 1.592889 7.395556 3.982222 3.470222 2.275556 6.428444 5.290667 3.015111 2.958222 5.347556 6.428444 2.275556 3.527111 3.925333 7.395556 1.592889 3.868444 2.446222 7.964444 0.796444 4.152889 0.796445 8.362667v128q0 4.209778-0.796445 8.305777-0.853333 4.152889-2.446222 8.021334-1.592889 3.868444-3.982222 7.395555-2.275556 3.470222-5.290667 6.428445-2.958222 3.015111-6.428444 5.347555-3.527111 2.275556-7.395556 3.925334-3.868444 1.592889-7.964444 2.446222-4.152889 0.796444-8.362667 0.796444t-8.305778-0.796444q-4.152889-0.853333-8.021333-2.446222-3.868444-1.592889-7.395556-3.982223-3.470222-2.275556-6.428444-5.290666-3.015111-2.958222-5.347556-6.428445-2.275556-3.527111-3.925333-7.395555-1.592889-3.868444-2.446222-7.964445-0.796444-4.152889-0.796445-8.362666v-128zM661.333333 490.666667q0-4.209778 0.796445-8.305778 0.853333-4.152889 2.446222-8.021333 1.592889-3.868444 3.982222-7.395556 2.275556-3.470222 5.290667-6.428444 2.958222-3.015111 6.428444-5.347556 3.527111-2.275556 7.395556-3.925333 3.868444-1.592889 7.964444-2.446223 4.152889-0.796444 8.362667-0.796444t8.305778 0.796444q4.152889 0.853333 8.021333 2.446223 3.868444 1.592889 7.395556 3.982222 3.470222 2.275556 6.428444 5.290667 3.015111 2.958222 5.347556 6.428444 2.275556 3.527111 3.925333 7.395556 1.592889 3.868444 2.446222 7.964444 0.796444 4.152889 0.796445 8.362667v128q0 4.209778-0.796445 8.305777-0.853333 4.152889-2.446222 8.021334-1.592889 3.868444-3.982222 7.395555-2.275556 3.470222-5.290667 6.428445-2.958222 3.015111-6.428444 5.347555-3.527111 2.275556-7.395556 3.925334-3.868444 1.592889-7.964444 2.446222-4.152889 0.796444-8.362667 0.796444t-8.305778-0.796444q-4.152889-0.853333-8.021333-2.446222-3.868444-1.592889-7.395556-3.982223-3.470222-2.275556-6.428444-5.290666-3.015111-2.958222-5.347556-6.428445-2.275556-3.527111-3.925333-7.395555-1.592889-3.868444-2.446222-7.964445-0.796444-4.152889-0.796445-8.362666v-128z" fill="#FCFCFC"></path></svg>
+                        </div>
+                        <div class="tab-option tab-option-has-icon" title="全屏">
+                            <svg class="icon" viewBox="0 0 1024 1024" width="160" height="160"><path d="M290 236.4l43.9-43.9c4.7-4.7 1.9-12.8-4.7-13.6L169 160c-5.1-0.6-9.5 3.7-8.9 8.9L179 329.1c0.8 6.6 8.9 9.4 13.6 4.7l43.7-43.7L370 423.7c3.1 3.1 8.2 3.1 11.3 0l42.4-42.3c3.1-3.1 3.1-8.2 0-11.3L290 236.4zM642.7 423.7c3.1 3.1 8.2 3.1 11.3 0l133.7-133.6 43.7 43.7c4.7 4.7 12.8 1.9 13.6-4.7L863.9 169c0.6-5.1-3.7-9.5-8.9-8.9L694.8 179c-6.6 0.8-9.4 8.9-4.7 13.6l43.9 43.9L600.3 370c-3.1 3.1-3.1 8.2 0 11.3l42.4 42.4zM845 694.9c-0.8-6.6-8.9-9.4-13.6-4.7l-43.7 43.7L654 600.3c-3.1-3.1-8.2-3.1-11.3 0l-42.4 42.3c-3.1 3.1-3.1 8.2 0 11.3L734 787.6l-43.9 43.9c-4.7 4.7-1.9 12.8 4.7 13.6L855 864c5.1 0.6 9.5-3.7 8.9-8.9L845 694.9zM381.3 600.3c-3.1-3.1-8.2-3.1-11.3 0L236.3 733.9l-43.7-43.7c-4.7-4.7-12.8-1.9-13.6 4.7L160.1 855c-0.6 5.1 3.7 9.5 8.9 8.9L329.2 845c6.6-0.8 9.4-8.9 4.7-13.6L290 787.6 423.7 654c3.1-3.1 3.1-8.2 0-11.3l-42.4-42.4z" fill="#FCFCFC"></path></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mde-toolbar">
+                    <div class="toolbar-item toolbar-item-has-icon" title="加粗">
+                        <svg width="16" height="16" viewBox="0 0 48 48" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M24 24C29.5056 24 33.9688 19.5228 33.9688 14C33.9688 8.47715 29.5056 4 24 4H11V24H24Z" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M28.0312 44C33.5368 44 38 39.5228 38 34C38 28.4772 33.5368 24 28.0312 24H11V44H28.0312Z" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    </div>
+
+                    <div class="toolbar-item toolbar-item-has-icon" title="斜体">
+                        <svg width="16" height="16" viewBox="0 0 48 48" fill="none"><path d="M20 6H36" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 42H28" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M29 5.95215L19 41.9998" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    </div>
+
+                    <div class="toolbar-item toolbar-item-has-icon" title="删除线">
+                        <svg width="16" height="16" viewBox="0 0 48 48" fill="none"><path d="M5 24H43" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M24 24C40 30 34 44 24 44C13.9999 44 12 36 12 36" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M35.9999 12C35.9999 12 33 4 23.9999 4C14.9999 4 11.4359 11.5995 15.6096 18" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 36C12 36 15.9999 44 24 44C32 44 36.564 36.4005 32.3903 30" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    </div>
+
+                    <div class="sep"></div>
+
+                    <div class="toolbar-item toolbar-item-has-icon" title="标题">
+                        <svg width="16" height="16" viewBox="0 0 48 48" fill="none"><path d="M12 5V43" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M36 5V43" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 24L36 24" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    </div>
+
+                    <div class="toolbar-item toolbar-item-has-icon" title="有序列表">
+                        <svg width="16" height="16" viewBox="0 0 48 48" fill="none"><path d="M9 42C11.2091 42 13 40.2091 13 38C13 35.7909 11.2091 34 9 34C6.79086 34 5 35.7909 5 38C5 40.2091 6.79086 42 9 42Z" stroke="currentColor" stroke-width="4" stroke-linejoin="round"></path><path d="M9 14C11.2091 14 13 12.2092 13 10C13 7.79086 11.2091 6 9 6C6.79086 6 5 7.79086 5 10C5 12.2092 6.79086 14 9 14Z" stroke="currentColor" stroke-width="4" stroke-linejoin="round"></path><path d="M9 28C11.2091 28 13 26.2092 13 24C13 21.7908 11.2091 20 9 20C6.79086 20 5 21.7908 5 24C5 26.2092 6.79086 28 9 28Z" stroke="currentColor" stroke-width="4" stroke-linejoin="round"></path><path d="M21 24H43" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M21 38H43" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M21 10H43" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    </div>
+
+                    <div class="toolbar-item toolbar-item-has-icon" title="无序列表">
+                        <svg width="16" height="16" viewBox="0 0 48 48" fill="none"><path d="M9 4V13" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 13H6" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 27H6" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M6 19.9998C6 19.9998 9 16.9998 11 19.9998C13 22.9999 6 26.9998 6 26.9998" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M6.00016 34.5001C6.00016 34.5001 8.00016 31.5 11.0002 33.5C14.0002 35.5 11.0002 38 11.0002 38C11.0002 38 14.0002 40.5 11.0002 42.5C8.00015 44.5 6.00015 41.5 6.00015 41.5" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M11 38H9" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M9 4L6 6" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M21 24H43" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M21 38H43" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M21 10H43" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    </div>
+
+                    <div class="toolbar-item toolbar-item-has-icon" title="引用">
+                        <svg width="16" height="16" viewBox="0 0 48 48" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M18.8533 9.11587C11.3227 13.9521 7.13913 19.5811 6.30256 26.0028C5.00021 35.9999 13.9404 40.8932 18.4703 36.4966C23.0002 32.1 20.2848 26.5195 17.0047 24.9941C13.7246 23.4686 11.7187 23.9999 12.0686 21.9614C12.4185 19.923 17.0851 14.2712 21.1849 11.6391C21.4569 11.4078 21.5604 10.959 21.2985 10.6185C21.1262 10.3946 20.7883 9.95545 20.2848 9.30102C19.8445 8.72875 19.4227 8.75017 18.8533 9.11587Z" fill="currentColor"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M38.6789 9.11587C31.1484 13.9521 26.9648 19.5811 26.1282 26.0028C24.8259 35.9999 33.7661 40.8932 38.296 36.4966C42.8259 32.1 40.1105 26.5195 36.8304 24.9941C33.5503 23.4686 31.5443 23.9999 31.8943 21.9614C32.2442 19.923 36.9108 14.2712 41.0106 11.6391C41.2826 11.4078 41.3861 10.959 41.1241 10.6185C40.9519 10.3946 40.614 9.95545 40.1105 9.30102C39.6702 8.72875 39.2484 8.75017 38.6789 9.11587Z" fill="currentColor"></path></svg>
+                    </div>
+
+                    <div class="sep"></div>
+
+                    <div class="toolbar-item toolbar-item-has-icon" title="链接">
+                        <svg width="16" height="16" viewBox="0 0 48 48" fill="none"><rect x="34.6074" y="3.4939" width="14" height="18" rx="2" transform="rotate(45 34.6074 3.4939)" stroke="currentColor" stroke-width="4" stroke-linejoin="round"></rect><rect x="16.2227" y="21.8787" width="14" height="18" rx="2" transform="rotate(45 16.2227 21.8787)" stroke="currentColor" stroke-width="4" stroke-linejoin="round"></rect><path d="M31.0723 16.929L16.9301 31.0711" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    </div>
+
+                    <div class="toolbar-item toolbar-item-has-icon" title="图片">
+                        <svg width="16" height="16" viewBox="0 0 48 48" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M5 10C5 8.89543 5.89543 8 7 8L41 8C42.1046 8 43 8.89543 43 10V38C43 39.1046 42.1046 40 41 40H7C5.89543 40 5 39.1046 5 38V10Z" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M14.5 18C15.3284 18 16 17.3284 16 16.5C16 15.6716 15.3284 15 14.5 15C13.6716 15 13 15.6716 13 16.5C13 17.3284 13.6716 18 14.5 18Z" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M15 24L20 28L26 21L43 34V38C43 39.1046 42.1046 40 41 40H7C5.89543 40 5 39.1046 5 38V34L15 24Z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"></path></svg>
+                    </div>
+
+                    <div class="toolbar-item toolbar-item-has-icon" title="代码块">
+                        <svg width="16" height="16" viewBox="0 0 48 48" fill="none"><path d="M16 13L4 25.4322L16 37" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M32 13L44 25.4322L32 37" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M28 4L21 44" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path></svg>
+                    </div>
+
+                    <div class="sep"></div>
+
+                    <div class="toolbar-item toolbar-item-has-icon" title="表格">
+                        <svg width="16" height="16" viewBox="0 0 48 48" fill="none"><path d="M42 6H6C4.89543 6 4 6.89543 4 8V40C4 41.1046 4.89543 42 6 42H42C43.1046 42 44 41.1046 44 40V8C44 6.89543 43.1046 6 42 6Z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"></path><path d="M4 18H44" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M17.5 18V42" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M30.5 18V42" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M4 30H44" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M44 8V40C44 41.1046 43.1046 42 42 42H6C4.89543 42 4 41.1046 4 40V8" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    </div>
+
+                    <div class="toolbar-item toolbar-item-has-icon" title="分割线">
+                        <svg width="16" height="16" viewBox="0 0 48 48" fill="none"><path d="M10.5 24L38.5 24" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    </div>
+
+                    <div class="sep"></div>
+
+                    <div class="toolbar-item toolbar-item-has-icon" title="撤销">
+                        <svg width="16" height="16" viewBox="0 0 48 48" fill="none"><path d="M11.2721 36.7279C14.5294 39.9853 19.0294 42 24 42C33.9411 42 42 33.9411 42 24C42 14.0589 33.9411 6 24 6C19.0294 6 14.5294 8.01472 11.2721 11.2721C9.61407 12.9301 6 17 6 17" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M6 9V17H14" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    </div>
+
+                    <div class="toolbar-item toolbar-item-has-icon" title="重做">
+                        <svg width="16" height="16" viewBox="0 0 48 48" fill="none"><path d="M36.7279 36.7279C33.4706 39.9853 28.9706 42 24 42C14.0589 42 6 33.9411 6 24C6 14.0589 14.0589 6 24 6C28.9706 6 33.4706 8.01472 36.7279 11.2721C38.3859 12.9301 42 17 42 17" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path><path d="M42 8V17H33" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                    </div>
+
+                    <div class="toolbar-item toolbar-item-has-icon" title="清空">
+                        <svg width="16" height="16" viewBox="0 0 48 48" fill="none"><g clip-path="url(#icon-6d2ff5a3ee094720)"><path d="M44.7818 24.1702L31.918 7.09935L14.1348 20.5L27.5 37L30.8556 34.6643L44.7818 24.1702Z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"></path><path d="M27.4998 37L23.6613 40.0748L13.0978 40.074L10.4973 36.6231L4.06543 28.0876L14.4998 20.2248" stroke="currentColor" stroke-width="4" stroke-linejoin="round"></path><path d="M13.2056 40.072L44.5653 40.072" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path></g><defs><clipPath id="icon-6d2ff5a3ee094720"><rect width="48" height="48" fill="currentColor"></rect></clipPath></defs></svg>
+                    </div>
+                </div>
+
+                <div class="editor-wrapper">
+                    <div class="editor-content">
+                        <!-- CodeMirror 编辑器区域 -->
+                        <div class="editor-pane" id="editorPane">
+                            <textarea id="editorContent" name="content" class="editor-textarea"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="expression">
+                        <div class="exp-item">AC娘</div>
+                        <div class="exp-item">洋葱头</div>
+                        <div class="exp-item">小黄鸡</div>
+                        <div class="exp-item">APP</div>
+                    </div>
+
+                    <div class="topic-select">
+                        <div class="topic-contain-select">
+                            <div class="topic-form-group">
+                                <label>板块</label>
+                                <select name="category" class="form-control">
+                                    {{range .categories}}
+                                    <option value="{{.ID}}">{{.Name}}</option>
+                                    {{end}}
+                                </select>
+                            </div>
+
+                            <div class="topic-form-group">
+                                <label>阅读限制</label>
+                                <select name="readLimit" class="form-control">
+                                    <option value="1">公开</option>
+                                    <option value="2">Lv1</option>
+                                    <option value="3">Lv2</option>
+                                    <option value="4">私有</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="publish-actions">
+                            <button type="submit" class="btn btn-primary">发布文章</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
+
+{{template "footer" .}}
+
+<script src="/static/js/app.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/markdown/markdown.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/continuelist.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/display/placeholder.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
+<script src="/static/js/publish.js"></script>
+</body>
+</html>

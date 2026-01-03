@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{block "title" .}} - 技术社区{{end}}</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/favicon-16x16.png">
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body class="dark-theme">
+{{template "header" .}}
+
+<main>
+   <div class="container">
+     <div class="main-content">
+       <div class="content">
+         <div class="card">
+           <div class="card-header">
+             <div class="card-title">最新帖子</div>
+             <a href="#" class="more-link">更多</a>
+           </div>
+
+           <div class="post-list">
+             {{range .posts}}
+             <div class="post-item">
+               <a href="/post-{{.ID}}-1" class="post-title">{{.Title}}</a>
+               <div class="post-meta">
+                 <span>作者: {{.Author}}</span>
+                 <span>节点: {{.Category}}</span>
+                 <span>回复: {{.Replies}}</span>
+                 <span>{{.TimeAgo}}</span>
+               </div>
+             </div>
+             {{else}}
+             <div class="no-posts">暂无帖子</div>
+             {{end}}
+
+             <!-- 替换原来的分页注释部分 -->
+             <div class="pagination">
+               {{if .hasPrev}}
+               <a href="?page={{.prevPage}}" class="page-link">‹</a>
+               {{else}}
+               <a class="page-link disabled">‹</a>
+               {{end}}
+
+               {{$currentPage := .currentPage}}
+               {{$totalPages := .totalPages}}
+
+               {{if gt $currentPage 5}}
+               <a href="?page=1" class="page-link">1</a>
+               {{if gt $currentPage 6}}<span class="page-ellipsis">...</span>{{end}}
+               {{end}}
+
+               {{$start := sub $currentPage 4}}
+               {{$end := add $currentPage 4}}
+
+               {{if le $start 0}}{{$start = 1}}{{end}}
+               {{if gt $end $totalPages}}{{$end = $totalPages}}{{end}}
+
+               {{range loop $start $end}}
+               {{if eq . $currentPage}}
+               <a class="page-link active">{{.}}</a>
+               {{else}}
+               <a href="?page={{.}}" class="page-link">{{.}}</a>
+               {{end}}
+               {{end}}
+
+               {{if lt $currentPage (sub $totalPages 4)}}
+               {{if lt $currentPage (sub $totalPages 5)}}<span class="page-ellipsis">...</span>{{end}}
+               <a href="?page={{$totalPages}}" class="page-link">{{$totalPages}}</a>
+               {{end}}
+
+               {{if .hasNext}}
+               <a href="?page={{.nextPage}}" class="page-link">›</a>
+               {{else}}
+               <a class="page-link disabled">›</a>
+               {{end}}
+             </div>
+
+           </div>
+         </div>
+
+         <div class="card">
+           <div class="card-header">
+             <div class="card-title">热门节点</div>
+             <a href="#" class="more-link">全部节点</a>
+           </div>
+
+           <div class="node-list">
+             {{range .categories}}
+             <a href="/categories/{{.Alias}}" class="node-tag">{{.Name}}</a>
+             {{end}}
+           </div>
+         </div>
+       </div>
+
+       <div class="sidebar">
+         {{if .user}}
+         <div class="card author-card">
+           <div class="card-header">
+             <div class="card-title">快速发表文章</div>
+           </div>
+
+           <div class="quick-post">
+             <a href="/publish" class="btn btn-primary">发表新文章</a>
+           </div>
+         </div>
+         {{end}}
+
+         <div class="card">
+           <div class="card-header">
+             <div class="card-title">社区统计</div>
+           </div>
+           <div class="stats">
+             <div class="stat-item">注册用户: {{.userCount}}</div>
+             <div class="stat-item">主题数量: {{.postCount}}</div>
+             <div class="stat-item">回复数量: {{.commentCount}}</div>
+             <div class="stat-item">在线用户: {{.onlineCount}}</div>
+           </div>
+         </div>
+
+         <div class="card">
+           <div class="card-header">
+             <div class="card-title">热门标签</div>
+           </div>
+           <div class="node-list">
+             <a href="#" class="node-tag">AWS</a>
+             <a href="#" class="node-tag">Nginx</a>
+             <a href="#" class="node-tag">Redis</a>
+             <a href="#" class="node-tag">Kubernetes</a>
+             <a href="#" class="node-tag">MySQL</a>
+             <a href="#" class="node-tag">SSL</a>
+             <a href="#" class="node-tag">API</a>
+             <a href="#" class="node-tag">Git</a>
+           </div>
+         </div>
+
+         <div class="card">
+           <div class="card-header">
+             <div class="card-title">公告</div>
+           </div>
+           <div class="announcement">
+             <p>欢迎来到Doniai技术社区！请遵守社区规则，文明发言。</p>
+             <p>新功能预告：即将推出移动端APP，敬请期待！</p>
+           </div>
+         </div>
+       </div>
+     </div>
+   </div>
+</main>
+
+{{template "footer" .}}
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>

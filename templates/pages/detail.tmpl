@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{block "title" .}} - 技术社区{{end}}</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/favicon-16x16.png">
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body class="dark-theme">
+{{template "header" .}}
+
+<main>
+<div class="container">
+  <div class="main-content">
+    <div class="content">
+      <!-- 帖子内容 -->
+      <div class="card post-content">
+        <div class="post-header">
+          <h1 class="post-title">{{.Post.Title}}</h1>
+          <div class="post-meta">
+            <div class="author-info">
+              <img src="{{.User.Avatar}}" alt="用户头像" class="avatar avatar-default">
+              <div class="author-details">
+                <span class="author-name">{{.User.Name}}</span>
+                <span class="post-time">发布于 {{timeAgo .Post.CreatedAt}}</span>
+              </div>
+            </div>
+            <div class="post-stats">
+              <span class="stat-item">浏览 {{.Post.Views}}</span>
+              <span class="stat-item">回复 {{.Post.Replies}}</span>
+              <span class="stat-item">收藏 {{.Post.Favorites}}</span>
+            </div>
+          </div>
+          <div class="post-tags">
+            {{range .Tags}}
+            <a href="#" class="node-tag">{{.}}</a>
+            {{end}}
+          </div>
+        </div>
+
+        <div class="post-body">
+          {{.Content}}
+        </div>
+
+        <div class="post-actions">
+          <button class="action-btn like-btn">
+            <span class="icon">👍</span>
+            <span>{{.Post.Likes}}</span>
+          </button>
+          <button class="action-btn favorite-btn">
+            <span class="icon">⭐</span>
+            {{if .Post.Favorites}}
+            <span>已收藏</span>
+            {{else}}
+            <span>收藏</span>
+            {{end}}
+          </button>
+          <button class="action-btn share-btn">
+            <span class="icon">↗️</span>
+            <span>分享</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 评论区 -->
+      <div class="card comments-section">
+        <div class="card-header">
+          <div class="card-title">评论 ({{.commentTotalCount}})</div>
+        </div>
+
+        <!-- 评论表单 -->
+        <div class="comment-form" data-post-id="{{.Post.ID}}">
+          <textarea placeholder="写下你的评论..." rows="4"></textarea>
+          <input type="hidden" id="parent-id" name="parent_id" value="0">
+          <div class="comment-actions">
+            <button class="btn btn-primary">发表评论</button>
+          </div>
+        </div>
+
+        <!-- 评论列表 -->
+        <div class="comment-list">
+          {{$currentUserID := 0}}
+          {{if .user}}
+          {{$currentUserID = .user.ID}}
+          {{end}}
+          {{range .Comments}}
+          <div class="comment-item" data-comment-id="{{.ID}}" data-user-id="{{.User.ID}}" data-current-user-id="{{$currentUserID}}">
+            <div class="comment-header">
+              <img src="{{.User.Avatar}}" alt="用户头像" class="avatar small">
+              <div class="comment-author">{{.User.Name}}</div>
+              <div class="comment-time">{{.TimeAgo}}</div>
+            </div>
+            <div class="comment-content">
+              <p>{{.Content}}</p>
+            </div>
+            <div class="comment-actions">
+              <button class="reply-btn">回复</button>
+              <button class="like-btn" data-comment-id="{{.ID}}" data-action="like">👍 {{.LikeCount}}</button>
+            </div>
+
+            {{if .Replies}}
+            <!-- 子评论 -->
+            <div class="comment-reply">
+              {{range .Replies}}
+              <div class="comment-item" data-comment-id="{{.ID}}" data-user-id="{{.User.ID}}" data-current-user-id="{{$currentUserID}}">
+                <div class="comment-header">
+                  <img src="{{.User.Avatar}}" alt="用户头像" class="avatar small">
+                  <div class="comment-author">{{.User.Name}}</div>
+                  <div class="comment-time">{{.TimeAgo}}</div>
+                </div>
+                <div class="comment-content">
+                  <p>{{.Content}}</p>
+                </div>
+                <div class="comment-actions">
+                  <button class="reply-btn">回复</button>
+                  <button class="like-btn" data-comment-id="{{.ID}}" data-action="like">👍 {{.LikeCount}}</button>
+                </div>
+              </div>
+              {{end}}
+            </div>
+            {{end}}
+          </div>
+          {{else}}
+          <p>暂无评论</p>
+          {{end}}
+
+          <!-- 在评论列表循环外部使用页面变量 -->
+          {{if gt .commentTotalPages 1}}
+          <div class="pagination1">
+            <div class="pagination-pages">
+              {{$commentCurrentPage := .commentCurrentPage}}
+              {{$commentTotalPages := .commentTotalPages}}
+
+              {{if gt $commentCurrentPage 5}}
+              <a href="?page=1" class="page-link">1</a>
+              {{if gt $commentCurrentPage 6}}<span class="page-ellipsis">...</span>{{end}}
+              {{end}}
+
+              {{$commentStart := sub $commentCurrentPage 4}}
+              {{$commentEnd := add $commentCurrentPage 4}}
+
+              {{if le $commentStart 0}}{{$commentStart = 1}}{{end}}
+              {{if gt $commentEnd $commentTotalPages}}{{$commentEnd = $commentTotalPages}}{{end}}
+
+              {{range loop $commentStart $commentEnd}}
+              {{if eq . $commentCurrentPage}}
+              <a class="page-link active">{{.}}</a>
+              {{else}}
+              <a href="?page={{.}}" class="page-link">{{.}}</a>
+              {{end}}
+              {{end}}
+
+              {{if lt $commentCurrentPage (sub $commentTotalPages 4)}}
+              {{if lt $commentCurrentPage (sub $commentTotalPages 5)}}<span class="page-ellipsis">...</span>{{end}}
+              <a href="?page={{$commentTotalPages}}" class="page-link">{{$commentTotalPages}}</a>
+              {{end}}
+            </div>
+
+            <div class="pagination-nav">
+              {{if .commentHasPrev}}
+              <a href="?page={{.commentPrevPage}}" class="page-link">‹ 上一页</a>
+              {{else}}
+              <a class="page-link disabled">‹ 上一页</a>
+              {{end}}
+
+              {{if .commentHasNext}}
+              <a href="?page={{.commentNextPage}}" class="page-link">下一页 ›</a>
+              {{else}}
+              <a class="page-link disabled">下一页 ›</a>
+              {{end}}
+            </div>
+          </div>
+          {{end}}
+
+
+        </div>
+      </div>
+
+      <!-- 相关帖子 -->
+      <div class="card related-posts">
+        <div class="card-header">
+          <div class="card-title">相关帖子</div>
+        </div>
+        {{if .RelatedPosts}}
+        <div class="post-list">
+
+          {{range .RelatedPosts}}
+          <div class="post-item">
+            <a href="#" class="post-title">{{ .Title }}</a>
+            <div class="post-meta">
+              <span>作者: {{ .Author }}</span>
+              <span>回复: {{ .Replies }}</span>
+              <span>发布于 {{timeAgo .CreatedAt}}</span>
+            </div>
+          </div>
+          {{end}}
+        </div>
+        {{else}}
+        <div>暂无相关帖子</div>
+        {{end}}
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="card author-card">
+        <div class="card-header">
+          <div class="card-title">作者信息</div>
+        </div>
+        <div class="author-info">
+          <img src="{{.User.Avatar}}" alt="{{.User.Name}}" class="avatar large">
+          <div class="author-details">
+            <div class="author-name">{{.User.Name}}</div>
+            <div class="author-bio">{{.User.Motto}}</div>
+          </div>
+        </div>
+        <div class="author-stats">
+          <a class="stat" href="/posts">
+            <div class="stat-number">{{.postCount}}</div>
+            <div class="stat-label">帖子</div>
+          </a>
+          <div class="stat">
+            <div class="stat-number">{{.replyCount}}</div>
+            <div class="stat-label">回复</div>
+          </div>
+          <div class="stat">
+            <div class="stat-number">{{.likeCount}}</div>
+            <div class="stat-label">获赞</div>
+          </div>
+        </div>
+        {{if .user}}
+        <div class="quick-post">
+          <a href="/publish" class="btn btn-primary">发表新文章</a>
+        </div>
+        {{end}}
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">热门标签</div>
+        </div>
+        <div class="node-list">
+          <a href="#" class="node-tag">VPS</a>
+          <a href="#" class="node-tag">Linux</a>
+          <a href="#" class="node-tag">Docker</a>
+          <a href="#" class="node-tag">Node.js</a>
+          <a href="#" class="node-tag">Python</a>
+          <a href="#" class="node-tag">数据库</a>
+          <a href="#" class="node-tag">CDN</a>
+          <a href="#" class="node-tag">网络安全</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">公告</div>
+        </div>
+        <div class="announcement">
+          <p>社区新功能：现在支持代码高亮和数学公式显示了！</p>
+          <p>欢迎参与我们的开源项目，共同完善Doniai社区。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</main>
+
+{{template "footer" .}}
+
+<script src="/static/js/app.js"></script>
+<script src="/static/js/comment.js"></script>
+</body>
+</html>

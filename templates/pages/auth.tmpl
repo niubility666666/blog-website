@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>登录/注册</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/favicon-16x16.png">
+  <link rel="manifest" href="/static/icons/site.webmanifest">
+  <link rel="stylesheet" href="/static/css/app.css">
+  <link rel="stylesheet" href="/static/css/auth.css">
+</head>
+<body class="dark-theme">
+{{template "header" .}}
+
+<!-- 主要内容 -->
+<main class="auth-container">
+  <div class="container">
+    <div class="auth-card">
+      <!-- 标签页切换 -->
+      <div class="auth-tabs">
+        <button class="tab-btn active" data-tab="login">登录</button>
+        <button class="tab-btn" data-tab="register">注册</button>
+      </div>
+
+      <!-- 登录表单 -->
+      <form class="auth-form active" id="loginForm">
+        <div class="form-header">
+          <h2>欢迎回来</h2>
+          <p>登录您的Doniai账户</p>
+        </div>
+
+        <div class="form-group">
+          <label for="loginEmail">邮箱或用户名</label>
+          <input type="text" id="loginEmail" name="email" required>
+          <div class="error-message" id="loginEmailError"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="loginPassword">密码</label>
+          <div class="password-input">
+            <input type="password" id="loginPassword" name="password" required>
+            <button type="button" class="toggle-password" data-target="loginPassword">👁️</button>
+          </div>
+          <div class="error-message" id="loginPasswordError"></div>
+        </div>
+
+        <div class="form-options">
+          <label class="checkbox">
+            <input type="checkbox" name="remember">
+            <span class="checkmark"></span>
+            记住我
+          </label>
+          <a href="#" class="forgot-password">忘记密码？</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">登录</button>
+
+        <div class="divider">
+          <span>或</span>
+        </div>
+
+        <div class="social-login">
+          <button type="button" class="btn btn-social btn-github">
+            <span class="social-icon">🐙</span>
+            使用 GitHub 登录
+          </button>
+          <button type="button" class="btn btn-social btn-google">
+            <span class="social-icon">🔍</span>
+            使用 Google 登录
+          </button>
+        </div>
+      </form>
+
+      <!-- 注册表单 -->
+      <form class="auth-form" id="registerForm">
+        <div class="form-header">
+          <h2>创建账户</h2>
+          <p>加入Doniai技术社区</p>
+        </div>
+
+        <div class="form-group">
+          <label for="registerUsername">用户名</label>
+          <input type="text" id="registerUsername" name="username" required>
+          <div class="error-message" id="registerUsernameError"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="registerEmail">邮箱地址</label>
+          <input type="email" id="registerEmail" name="email" required>
+          <div class="error-message" id="registerEmailError"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="registerPassword">密码</label>
+          <div class="password-input">
+            <input type="password" id="registerPassword" name="password" required>
+            <button type="button" class="toggle-password" data-target="registerPassword">👁️</button>
+          </div>
+          <div class="password-strength">
+            <div class="strength-bar">
+              <div class="strength-fill" id="passwordStrength"></div>
+            </div>
+            <span class="strength-text" id="passwordStrengthText">密码强度</span>
+          </div>
+          <div class="error-message" id="registerPasswordError"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">确认密码</label>
+          <div class="password-input">
+            <input type="password" id="confirmPassword" name="confirmPassword" required>
+            <button type="button" class="toggle-password" data-target="confirmPassword">👁️</button>
+          </div>
+          <div class="error-message" id="confirmPasswordError"></div>
+        </div>
+
+        <div class="form-options">
+          <label class="checkbox">
+            <input type="checkbox" name="agreeTerms" required>
+            <span class="checkmark"></span>
+            我同意 <a href="#">服务条款</a> 和 <a href="#">隐私政策</a>
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">注册</button>
+
+        <div class="divider">
+          <span>或</span>
+        </div>
+
+        <div class="social-login">
+          <button type="button" class="btn btn-social btn-github">
+            <span class="social-icon">🐙</span>
+            使用 GitHub 注册
+          </button>
+          <button type="button" class="btn btn-social btn-google">
+            <span class="social-icon">🔍</span>
+            使用 Google 注册
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- 特性展示 -->
+    <div class="features">
+      <div class="feature-card">
+        <div class="feature-icon">💬</div>
+        <h3>技术讨论</h3>
+        <p>与开发者交流技术问题，分享经验心得</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🚀</div>
+        <h3>最新动态</h3>
+        <p>获取最新的技术资讯和开发工具</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">👥</div>
+        <h3>社区支持</h3>
+        <p>加入活跃的技术社区，获得帮助和支持</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- 忘记密码模态框 -->
+<div class="modal" id="forgotPasswordModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>找回密码</h3>
+      <button class="modal-close" id="closeForgotPasswordModal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="forgotPasswordForm">
+        <div class="form-group">
+          <label for="forgotEmail">请输入您的邮箱地址</label>
+          <input type="email" id="forgotEmail" name="email" required>
+          <div class="error-message" id="forgotEmailError"></div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">发送重置链接</button>
+      </form>
+
+      <div id="resetSuccessMessage" class="success-message" style="display: none;">
+        <p>✅ 重置密码的链接已发送到您的邮箱，请查收。</p>
+        <p>如果未收到邮件，请检查垃圾邮件文件夹。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{{template "footer" .}}
+
+<script src="/static/js/app.js"></script>
+<script src="/static/js/auth.js"></script>
+</body>
+</html>

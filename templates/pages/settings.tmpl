@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{block "title" .}} - 技术社区{{end}}</title>
+    <link rel="android-chrome-192x192" sizes="192x192" href="/static/icons/android-chrome-192x192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/favicon-16x16.png">
+    <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body class="dark-theme">
+{{template "header" .}}
+
+<main>
+    <div class="container">
+        <div class="settings-header">
+            <h1>账户设置</h1>
+        </div>
+
+        <div class="settings-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>基本信息</h2>
+                </div>
+                <div class="card-body">
+                    <form id="profileForm" class="settings-form">
+                        <div class="form-group">
+                            <label for="username">用户名</label>
+                            <input type="text" id="username" name="username" value="{{.user.Name}}" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">邮箱</label>
+                            <input type="email" id="email" name="email" value="{{.user.Email}}" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="motto">个人格言</label>
+                            <textarea id="motto" name="motto" placeholder="写下您的个人格言...">{{if .user.Motto}}{{.user.Motto}}{{end}}</textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="github">GitHub 账号</label>
+                            <input type="text" id="github" name="github" value="{{if .user.Github}}{{.user.Github}}{{end}}" placeholder="GitHub 用户名">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="googleAccount">Google 账户</label>
+                            <input type="text" id="googleAccount" name="googleAccount" value="{{if .user.GoogleAccount}}{{.user.GoogleAccount}}{{end}}" placeholder="Google 邮箱">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">保存更改</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>安全设置</h2>
+                </div>
+                <div class="card-body">
+                    <form id="securityForm" class="settings-form">
+                        <div class="form-group">
+                            <label for="currentPassword">当前密码</label>
+                            <div class="password-input-container">
+                                <input type="password" id="currentPassword" name="currentPassword" required>
+                                <span class="password-toggle" onclick="togglePasswordVisibility('currentPassword')">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                        <path d="M8 2c2.5 0 4.5 1.8 5.5 4 .5 1 .5 2 0 3C12.5 11.2 10.5 13 8 13s-4.5-1.8-5.5-4c-.5-1-.5-2 0-3C3.5 3.8 5.5 2 8 2zm0 1.5c-2 0-3.7 1.5-4.5 3.5.8 2 2.5 3.5 4.5 3.5s3.7-1.5 4.5-3.5c-.8-2-2.5-3.5-4.5-3.5zm0 2a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="newPassword">新密码</label>
+                            <div class="password-input-container">
+                                <input type="password" id="newPassword" name="newPassword" required>
+                                <span class="password-toggle" onclick="togglePasswordVisibility('newPassword')">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                        <path d="M8 2c2.5 0 4.5 1.8 5.5 4 .5 1 .5 2 0 3C12.5 11.2 10.5 13 8 13s-4.5-1.8-5.5-4c-.5-1-.5-2 0-3C3.5 3.8 5.5 2 8 2zm0 1.5c-2 0-3.7 1.5-4.5 3.5.8 2 2.5 3.5 4.5 3.5s3.7-1.5 4.5-3.5c-.8-2-2.5-3.5-4.5-3.5zm0 2a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirmPassword">确认新密码</label>
+                            <div class="password-input-container">
+                                <input type="password" id="confirmPassword" name="confirmPassword" required>
+                                <span class="password-toggle" onclick="togglePasswordVisibility('confirmPassword')">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                        <path d="M8 2c2.5 0 4.5 1.8 5.5 4 .5 1 .5 2 0 3C12.5 11.2 10.5 13 8 13s-4.5-1.8-5.5-4c-.5-1-.5-2 0-3C3.5 3.8 5.5 2 8 2zm0 1.5c-2 0-3.7 1.5-4.5 3.5.8 2 2.5 3.5 4.5 3.5s3.7-1.5 4.5-3.5c-.8-2-2.5-3.5-4.5-3.5zm0 2a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/>
+                                    </svg>
+                                </span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">更改密码</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+{{template "footer" .}}
+
+<script src="/static/js/app.js"></script>
+<script src="/static/js/profile.js"></script>
+</body>
+</html>

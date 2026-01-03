@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{block "title" .}} - 技术社区{{end}}</title>
+    <link rel="android-chrome-192x192" sizes="192x192" href="/static/icons/android-chrome-192x192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/icons/favicon-16x16.png">
+    <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body class="dark-theme">
+{{template "header" .}}
+
+<main>
+    <div class="container">
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <img src="{{.profileUser.Avatar}}" alt="{{.profileUser.Name}}" class="avatar-img">
+            </div>
+            <div class="profile-info">
+                <h1>{{.profileUser.Name}}</h1>
+                <p>{{.profileUser.Email}}</p>
+                <div class="profile-stats">
+                    <span>注册时间: {{.profileUser.CreatedAt.Format "2006-01-02"}}</span>
+                </div>
+            </div>
+
+            <div class="doi-post-data">
+                <a class="post-num" href="/posts">
+                    帖子 <span class="post-count">{{.postCount}}</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="profile-content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>基本信息</h2>
+                </div>
+                <div class="card-body">
+                    <div class="profile-field">
+                        <label>用户名:</label>
+                        <span>{{.profileUser.Name}}</span>
+                    </div>
+                    <div class="profile-field">
+                        <label>邮箱:</label>
+                        <span>{{.profileUser.Email}}</span>
+                    </div>
+                    <div class="profile-field">
+                        <label>注册时间:</label>
+                        <span>{{.profileUser.CreatedAt.Format "2006-01-02 15:04:05"}}</span>
+                    </div>
+                    <div class="profile-field">
+                        <label>个人格言:</label>
+                        <span>{{if .profileUser.Motto}}{{.profileUser.Motto}}{{else}}暂未设置{{end}}</span>
+                    </div>
+                    <div class="profile-field">
+                        <label>GitHub 账号:</label>
+                        <span>{{if .profileUser.Github}}{{.profileUser.Github}}{{else}}暂未设置{{end}}</span>
+                    </div>
+                    <div class="profile-field">
+                        <label>Google 账号:</label>
+                        <span>{{if .profileUser.GoogleAccount}}{{.profileUser.GoogleAccount}}{{else}}暂未设置{{end}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+{{template "footer" .}}
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
