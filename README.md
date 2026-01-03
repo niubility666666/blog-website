@@ -1,4 +1,4 @@
-# gin-doniai
+# gin-doniai (支持用谷歌账号，GitHub账号，平台自己注册的三种账号登陆)
 
 ## Windows环境下一键打包linux二进制运行包
 
