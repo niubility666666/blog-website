@@ -70,3 +70,6 @@ sudo systemctl status discuss-web.service
 # 查看日志
 sudo journalctl -u discuss-web.service -f
 ```
+
+### 部署样例
+<img width="3351" height="1286" alt="image" src="https://github.com/user-attachments/assets/9cbfc3b2-568f-432c-85d1-7d5ec9b92381" />
